@@ -1,0 +1,8 @@
+nl\webflight\filterparser\TestQueryFilterParser.class
+nl\webflight\filterparser\TestExpressionCreatorImpl.class
+nl\webflight\filterparser\TestDecimalExpressionOperatorSetter.class
+nl\webflight\filterparser\TestIntegerExpressionOperatorSetter.class
+nl\webflight\filterparser\TestQueryFilterParser$1.class
+nl\webflight\filterparser\TestFilterPatternProvider.class
+nl\webflight\filterparser\TestStringExpressionOperatorSetter.class
+nl\webflight\filterparser\TestBooleanExpressionOperatorSetter.class

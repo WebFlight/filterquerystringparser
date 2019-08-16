@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExpressionBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">filterquerystringparser</a> &gt; <a href="index.source.html" class="el_package">nl.webflight.filterparser</a> &gt; <span class="el_source">ExpressionBuilder.java</span></div><h1>ExpressionBuilder.java</h1><pre class="source lang-java linenums">package nl.webflight.filterparser;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ExpressionBuilder {
+	
+	private static final String INTEGER_DEFINITION = &quot;^\\-?[0-9]+$&quot;;
+	private static final String STRING_DEFINITION = &quot;^'[\\W\\w]*'$&quot;;
+	private static final String DECIMAL_DEFINITION = &quot;^\\-?[0-9]+\\.[0-9]+$&quot;;
+	private static final String BOOLEAN_DEFINITION = &quot;^true|false$&quot;;
+	
+	private ExpressionCreator expressionCreator;
+<span class="fc" id="L18">	private FilterPatternProvider regexPatternProvider = new FilterPatternProvider(new OperatorValueExtractorImpl());</span>
+	
+<span class="fc" id="L20">	protected ExpressionBuilder(ExpressionCreator expressionCreator) {</span>
+<span class="fc" id="L21">		this.expressionCreator = expressionCreator;</span>
+<span class="fc" id="L22">	}</span>
+	
+	public List&lt;Expression&gt; build(String filterExpression) throws InvalidExpressionTypeException, UnparsableFilterExpressionException {
+		
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">		if (entireExpressionDoesNotMatchPattern(filterExpression)) {</span>
+<span class="nc" id="L27">			throw new UnparsableFilterExpressionException(&quot;Expression &quot; + filterExpression + &quot; is invalid&quot;);</span>
+		}
+		
+<span class="fc" id="L30">		Pattern pattern = regexPatternProvider.getPattern();</span>
+<span class="fc" id="L31">		Matcher matcher = pattern.matcher(filterExpression);</span>
+<span class="fc" id="L32">		List&lt;Expression&gt; expressions = new ArrayList&lt;&gt;();</span>
+		
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		while(matcher.find()) {</span>
+<span class="fc" id="L35">			String expression = matcher.group(0);</span>
+<span class="fc" id="L36">			String field = matcher.group(1);</span>
+<span class="fc" id="L37">			String operator = matcher.group(2);</span>
+<span class="fc" id="L38">			String value = matcher.group(3);</span>
+			
+<span class="fc" id="L40">			Expression parsedExpression = getExpressionBasedOnValue(value);</span>
+<span class="pc" id="L41">			ComparisonOperator parsedOperator = getOperator(operator).orElseThrow(() -&gt; new UnparsableFilterExpressionException(&quot;Could not find operator in expression &quot; + expression));</span>
+<span class="fc" id="L42">			parsedExpression.setField(field);</span>
+<span class="fc" id="L43">			parsedExpression.setOperator(parsedOperator);</span>
+<span class="fc" id="L44">			parsedExpression.setValue(value);</span>
+<span class="fc" id="L45">			expressions.add(parsedExpression);	</span>
+<span class="fc" id="L46">		}</span>
+		
+<span class="fc" id="L48">		return expressions;</span>
+	}
+	
+	private boolean entireExpressionDoesNotMatchPattern(String filterExpression) {
+<span class="fc" id="L52">		Pattern pattern = regexPatternProvider.getPatternForFullMatch();</span>
+<span class="fc" id="L53">		Matcher matcher = pattern.matcher(filterExpression);</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">		boolean expressionDoesNotMatch = (matcher.matches() == false);</span>
+<span class="fc" id="L55">		return expressionDoesNotMatch;</span>
+	}
+	
+	private Expression getExpressionBasedOnValue(String value) throws UnparsableFilterExpressionException, InvalidExpressionTypeException {
+		
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		if(value.matches(STRING_DEFINITION)) {</span>
+<span class="fc" id="L61">			return expressionCreator.getExpression(ExpressionType.STRING);</span>
+		}
+		
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		if(value.matches(INTEGER_DEFINITION)) {</span>
+<span class="fc" id="L65">			return expressionCreator.getExpression(ExpressionType.INTEGER);</span>
+		}
+		
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		if(value.matches(DECIMAL_DEFINITION)) {</span>
+<span class="fc" id="L69">			return expressionCreator.getExpression(ExpressionType.DECIMAL);</span>
+		}
+		
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">		if(value.matches(BOOLEAN_DEFINITION)) {</span>
+<span class="fc" id="L73">			return expressionCreator.getExpression(ExpressionType.BOOLEAN);</span>
+		}
+		
+<span class="nc" id="L76">		throw new UnparsableFilterExpressionException(&quot;Could not parse expression with value: &quot; + value);</span>
+	}
+	
+	private Optional&lt;ComparisonOperator&gt; getOperator(String input) {
+<span class="fc" id="L80">		ComparisonOperator[] operators = ComparisonOperator.values();</span>
+<span class="fc" id="L81">		List&lt;ComparisonOperator&gt; operatorList = Arrays.asList(operators);</span>
+<span class="fc" id="L82">		Optional&lt;ComparisonOperator&gt; operator = operatorList.stream()</span>
+<span class="fc" id="L83">				.filter(o -&gt; o.getToken().equals(input))</span>
+<span class="fc" id="L84">				.findFirst();</span>
+<span class="fc" id="L85">		return operator;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
