@@ -40,6 +40,9 @@ jobs:
       # run tests!
       - run: mvn test
 
+      - store_artifacts:
+          path:  target
+
       - run:
           name: Upload Coverage
           when: on_success
