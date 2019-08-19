@@ -9,6 +9,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import nl.webflight.filterparser.QueryFilterParser;
+import nl.webflight.filterparser.exceptions.IncompatibleExpressionException;
+import nl.webflight.filterparser.exceptions.InvalidExpressionTypeException;
+import nl.webflight.filterparser.exceptions.UnparsableFilterExpressionException;
+import nl.webflight.filterparser.impl.BooleanExpression;
+import nl.webflight.filterparser.impl.BooleanExpressionOperatorSetter;
+import nl.webflight.filterparser.impl.ComparisonOperator;
+import nl.webflight.filterparser.impl.Expression;
+import nl.webflight.filterparser.impl.ExpressionBuilder;
+import nl.webflight.filterparser.interfaces.QueryBuilder;
+
 class TestQueryFilterParser {
 	
 	private static QueryBuilder queryBuilder;
