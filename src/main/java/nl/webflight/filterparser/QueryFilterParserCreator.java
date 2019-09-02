@@ -1,13 +1,13 @@
 package nl.webflight.filterparser;
 
-import nl.webflight.filterparser.impl.ExpressionBuilder;
-import nl.webflight.filterparser.impl.ExpressionCreatorImpl;
+import nl.webflight.filterparser.impl.ExpressionBuilderFactory;
+import nl.webflight.filterparser.impl.ExpressionCreatorFactory;
 import nl.webflight.filterparser.interfaces.QueryBuilder;
 
 public class QueryFilterParserCreator {
 	
-	public static QueryFilterParser getQueryFilterParser(QueryBuilder queryBuilder) {
-		return new QueryFilterParser(queryBuilder, new ExpressionBuilder(new ExpressionCreatorImpl()));
+	public static QueryFilterParser getQueryFilterParser(QueryBuilder queryBuilder, ExpressionBuilderFactory expressionBuilderFactory, ExpressionCreatorFactory expressionCreatorFactory) {
+		return new QueryFilterParser(queryBuilder, expressionBuilderFactory.getExpressionBuilder(expressionCreatorFactory));
 	}
 
 }

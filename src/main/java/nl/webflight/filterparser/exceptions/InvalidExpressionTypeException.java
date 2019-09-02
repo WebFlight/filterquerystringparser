@@ -1,6 +1,6 @@
 package nl.webflight.filterparser.exceptions;
 
-public class InvalidExpressionTypeException extends Exception {
+public class InvalidExpressionTypeException extends RuntimeException {
 
 	/**
 	 * 

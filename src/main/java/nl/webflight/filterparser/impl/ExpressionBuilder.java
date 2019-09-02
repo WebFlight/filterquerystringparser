@@ -7,16 +7,14 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.webflight.filterparser.exceptions.InvalidExpressionTypeException;
 import nl.webflight.filterparser.exceptions.UnparsableFilterExpressionException;
 import nl.webflight.filterparser.interfaces.ExpressionCreator;
 
 public class ExpressionBuilder {
 	
-	private static final String INTEGER_DEFINITION = "^\\-?[0-9]+$";
-	private static final String STRING_DEFINITION = "^'[\\W\\w]*'$";
-	private static final String DECIMAL_DEFINITION = "^\\-?[0-9]+\\.[0-9]+$";
-	private static final String BOOLEAN_DEFINITION = "^true|false$";
+	private final String INTEGER_DEFINITION = "^\\-?[0-9]+$";
+	private final String DECIMAL_DEFINITION = "^\\-?[0-9]+\\.[0-9]+$";
+	private final String BOOLEAN_DEFINITION = "^true|false$";
 	
 	private ExpressionCreator expressionCreator;
 	private FilterPatternProvider regexPatternProvider = new FilterPatternProvider(new OperatorValueExtractorImpl());
@@ -25,7 +23,7 @@ public class ExpressionBuilder {
 		this.expressionCreator = expressionCreator;
 	}
 	
-	public List<Expression> build(String filterExpression) throws InvalidExpressionTypeException, UnparsableFilterExpressionException {
+	public List<Expression> build(String filterExpression) throws UnparsableFilterExpressionException {
 		
 		if (entireExpressionDoesNotMatchPattern(filterExpression)) {
 			throw new UnparsableFilterExpressionException("Expression " + filterExpression + " is invalid");
@@ -59,11 +57,7 @@ public class ExpressionBuilder {
 		return expressionDoesNotMatch;
 	}
 	
-	private Expression getExpressionBasedOnValue(String value) throws UnparsableFilterExpressionException, InvalidExpressionTypeException {
-		
-		if(value.matches(STRING_DEFINITION)) {
-			return expressionCreator.getExpression(ExpressionType.STRING);
-		}
+	private Expression getExpressionBasedOnValue(String value) throws UnparsableFilterExpressionException {
 		
 		if(value.matches(INTEGER_DEFINITION)) {
 			return expressionCreator.getExpression(ExpressionType.INTEGER);
@@ -77,7 +71,7 @@ public class ExpressionBuilder {
 			return expressionCreator.getExpression(ExpressionType.BOOLEAN);
 		}
 		
-		throw new UnparsableFilterExpressionException("Could not parse expression with value: " + value);
+		return expressionCreator.getExpression(ExpressionType.STRING);
 	}
 	
 	private Optional<ComparisonOperator> getOperator(String input) {
