@@ -2,7 +2,6 @@ package nl.webflight.filterparser.interfaces;
 
 import java.util.List;
 
-import nl.webflight.filterparser.exceptions.IncompatibleExpressionException;
 import nl.webflight.filterparser.impl.Expression;
 
 /**
@@ -18,6 +17,6 @@ public interface QueryBuilder {
 	 * @return Query that is used to retrieve information from a back-end system.
 	 * @throws IncompatibleExpressionException If an expression implementation is not implemented in the QueryBuilder, throw this exception.
 	 */
-	public String build(List<Expression> expressions) throws IncompatibleExpressionException;
+	public String build(List<Expression> expressions);
 
 }
