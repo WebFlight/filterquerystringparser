@@ -3,6 +3,7 @@ package nl.webflight.filterparser.impl;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,15 +16,24 @@ import nl.webflight.filterparser.interfaces.ExpressionCreator;
 class TestExpressionBuilder {
 	
 	static ExpressionCreator expressionCreator;
+	static FilterPatternProviderFactory filterPatternProviderFactory;
+	static FilterPatternProvider filterPatternProvider;
 	static ExpressionBuilder expressionBuilder;
 	static Expression expression;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
 		expressionCreator = Mockito.mock(ExpressionCreator.class);
-		expressionBuilder = new ExpressionBuilder(expressionCreator);
+		filterPatternProviderFactory = Mockito.mock(FilterPatternProviderFactory.class);
+		filterPatternProvider = Mockito.mock(FilterPatternProvider.class);
 		expression = Mockito.mock(Expression.class);
+		
 		Mockito.when(expressionCreator.getExpression(Mockito.any(ExpressionType.class))).thenReturn(expression);
+		Mockito.when(filterPatternProviderFactory.getFilterPatternProvider()).thenReturn(filterPatternProvider);
+		Mockito.when(filterPatternProvider.getPattern()).thenReturn(Pattern.compile("([\\w]*) (gt|ge|lt|le|eq|ne) (('[^']*')|([\\-]?[\\d]+(?:.?\\d+)?)|(true|false))( and )?"));
+		Mockito.when(filterPatternProvider.getPatternForFullMatch()).thenReturn(Pattern.compile("^(([\\w]*) (gt|ge|lt|le|eq|ne) (('[^']*')|([\\-]?[\\d]+(?:.?\\d+)?)|(true|false))( and )?)+$"));
+		
+		expressionBuilder = new ExpressionBuilder(expressionCreator, filterPatternProviderFactory);
 	}
 
 	@Test

@@ -17,10 +17,11 @@ public class ExpressionBuilder {
 	private final String BOOLEAN_DEFINITION = "^true|false$";
 	
 	private ExpressionCreator expressionCreator;
-	private FilterPatternProvider regexPatternProvider = new FilterPatternProvider(new OperatorValueExtractorImpl());
+	private FilterPatternProvider regexPatternProvider;
 	
-	public ExpressionBuilder(ExpressionCreator expressionCreator) {
+	public ExpressionBuilder(ExpressionCreator expressionCreator, FilterPatternProviderFactory filterPatternProviderFactory) {
 		this.expressionCreator = expressionCreator;
+		this.regexPatternProvider = filterPatternProviderFactory.getFilterPatternProvider();
 	}
 	
 	public List<Expression> build(String filterExpression) throws UnparsableFilterExpressionException {
@@ -34,13 +35,12 @@ public class ExpressionBuilder {
 		List<Expression> expressions = new ArrayList<>();
 		
 		while(matcher.find()) {
-			String expression = matcher.group(0);
 			String field = matcher.group(1);
 			String operator = matcher.group(2);
 			String value = matcher.group(3);
 			
 			Expression parsedExpression = getExpressionBasedOnValue(value);
-			ComparisonOperator parsedOperator = getOperator(operator).orElseThrow(() -> new UnparsableFilterExpressionException("Could not find operator in expression " + expression));
+			ComparisonOperator parsedOperator = getOperator(operator).get();
 			parsedExpression.setField(field);
 			parsedExpression.setOperator(parsedOperator);
 			parsedExpression.setValue(value);
