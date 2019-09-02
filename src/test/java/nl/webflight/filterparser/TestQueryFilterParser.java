@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import nl.webflight.filterparser.QueryFilterParser;
-import nl.webflight.filterparser.exceptions.IncompatibleExpressionException;
 import nl.webflight.filterparser.exceptions.InvalidExpressionTypeException;
 import nl.webflight.filterparser.exceptions.UnparsableFilterExpressionException;
 import nl.webflight.filterparser.impl.BooleanExpression;
@@ -45,7 +44,7 @@ class TestQueryFilterParser {
 	}
 
 	@Test
-	void testParse() throws InvalidExpressionTypeException, UnparsableFilterExpressionException, IncompatibleExpressionException {
+	void testParse() throws InvalidExpressionTypeException, UnparsableFilterExpressionException {
 		String actualQuery = queryFilterParser.parse(queryStringFilter);
 		String expectedQuery = "testfield eq true";
 		assertEquals(expectedQuery, actualQuery);
