@@ -3,6 +3,10 @@
   <groupId>nl.webflight</groupId>
   <artifactId>filterquerystringparser</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <properties>
+  	<jacoco.percentage.instruction>0.95</jacoco.percentage.instruction>
+  	<jacoco.count.classmiss>0</jacoco.count.classmiss>
+  </properties>
   <build>
     <plugins>
       <plugin>
@@ -31,6 +35,31 @@
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+							  <rule implementation="org.jacoco.maven.RuleConfiguration">
+							    <element>BUNDLE</element>
+							    <limits>
+							    	<limit implementation="org.jacoco.report.check.Limit">
+								        <counter>INSTRUCTION</counter>
+								        <value>COVEREDRATIO</value>
+								        <minimum>${jacoco.percentage.instruction}</minimum>
+							      	</limit>
+							      	<limit>
+									    <counter>CLASS</counter>
+									    <value>MISSEDCOUNT</value>
+									    <maximum>${jacoco.count.classmiss}</maximum>
+								  	</limit>
+							    </limits>
+							  </rule>
+							</rules>
+						</configuration>
 					</execution>
 					<execution>
 						<id>report</id>
