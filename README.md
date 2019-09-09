@@ -6,6 +6,7 @@ A Java library that parses a query string parameter containing a filter expressi
 
 ## Supported operations
 The operations below are supported by the library.
+
 | Operator             | Description           | Example |
 | -------------------- | --------------------- | ----------------------------------------------------- |
 | Comparison Operators |                       | |
