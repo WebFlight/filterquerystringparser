@@ -6,17 +6,18 @@ A Java library that parses a query string parameter containing a filter expressi
 
 ## Supported operations
 The operations below are supported by the library.
-Operator             | Description           | Example
--------------------- | --------------------- | -----------------------------------------------------
-Comparison Operators |                       |
-eq                   | Equal                 | city eq 'Redmond'
-ne                   | Not equal             | city ne 'London'
-gt                   | Greater than          | price gt 20
-ge                   | Greater than or equal | price ge 10
-lt                   | Less than             | price lt 20
-le                   | Less than or equal    | price le 100
-Logical Operators    |                       |
-and                  | Logical and           | price le 200 and price gt 3.5
+
+| Operator             | Description           | Example |
+| -------------------- | --------------------- | ----------------------------------------------------- |
+| Comparison Operators |                       | |
+| eq                   | Equal                 | city eq 'Redmond' |
+| ne                   | Not equal             | city ne 'London' |
+| gt                   | Greater than          | price gt 20 |
+| ge                   | Greater than or equal | price ge 10 |
+| lt                   | Less than             | price lt 20 |
+| le                   | Less than or equal    | price le 100 |
+| Logical Operators    |                       | |
+| and                  | Logical and           | price le 200 and price gt 3.5 |
 
 ## Implementation
 Implement the ```QueryBuilder``` interface to create your own implementation for a backend. The implementation contains a method with the signature ```public String build(List<Expression> expressions)```. Construct a backend query based on the different types of expressions. The library distinguised four types of expressions:
